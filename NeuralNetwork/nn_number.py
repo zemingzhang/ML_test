@@ -33,6 +33,7 @@ def number(number):
     X_train, X_test, y_train, y_test, images_train, images_test = train_test_split(Xdata, digits.target, digits.images, test_size=0.25, random_state=42)
 
     nn = Classifier(layers=[Layer("Sigmoid", units=100),Layer("Softmax")],learning_rate=0.001,n_iter=25)
+    #http://aka.ms/vcpython27
     #http://blog.sciencenet.cn/blog-669638-1080739.html
     #C:\Python27\Lib\site-packages\lasagne\layers\pool.py
     nn.fit(X_train, y_train)
