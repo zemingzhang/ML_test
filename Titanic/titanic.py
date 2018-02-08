@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 from sklearn import datasets
 import pandas as pd
 from pandas import Series,DataFrame
-
+import sklearn.preprocessing as preprocessing
+from sklearn import linear_model
 
 data_train = pd.read_csv("train.csv")
 
-data_train.info()
+#data_train.info()
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn import linear_model
@@ -86,3 +87,41 @@ def set_Cabin_type(df):
 
 data_train, rfr = set_missing_ages(data_train)
 data_train = set_Cabin_type(data_train)
+
+def set_scale(df):
+    scaler = preprocessing.StandardScaler()
+    #dfm=df['Age'].as_matrix()
+    #print(dfm)
+    #age_scale_param = scaler.fit(dfm)
+    #df['Age_scaled'] = scaler.fit_transform(df['Age'], age_scale_param)
+    df['Age_scaled'] = scaler.fit_transform(df['Age'].values.reshape(-1, 1))
+    #fare_scale_param = scaler.fit(df['Fare'])
+    #df['Fare_scaled'] = scaler.fit_transform(df['Fare'], fare_scale_param)
+    #df['Fare_scaled'] = scaler.fit_transform(df['Fare'].values.reshape(-1, 1))
+    return df
+
+dummies_Cabin = pd.get_dummies(data_train['Cabin'], prefix= 'Cabin')
+
+dummies_Embarked = pd.get_dummies(data_train['Embarked'], prefix= 'Embarked')
+
+dummies_Sex = pd.get_dummies(data_train['Sex'], prefix= 'Sex')
+
+dummies_Pclass = pd.get_dummies(data_train['Pclass'], prefix= 'Pclass')
+
+df = pd.concat([data_train, dummies_Cabin, dummies_Embarked, dummies_Sex, dummies_Pclass], axis=1)
+df.drop(['Pclass', 'Name', 'Sex', 'Ticket', 'Cabin', 'Embarked'], axis=1, inplace=True)
+set_scale(df)
+#print("Age",df['Age'])
+#scaler = preprocessing.StandardScaler()
+#X = np.array([ 1., -1.,  2.])
+#scaler.fit(X)
+#age_scale_param = scaler.fit(df['Age'])
+#set_scale(df)
+#train_df = df.filter(regex='Survived|Age_.*|SibSp|Parch|Fare_.*|Cabin_.*|Embarked_.*|Sex_.*|Pclass_.*')
+#train_np = train_df.as_matrix()
+train_df = df.filter(regex='Survived|Age_.*|SibSp|Parch|Fare_.*|Cabin_.*|Embarked_.*|Sex_.*|Pclass_.*')
+train_np = train_df.as_matrix()
+
+#scaler.fit(train_np['Age'])
+
+
